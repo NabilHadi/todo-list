@@ -4,6 +4,7 @@ import TodoFactory from "./factories/todo-factory";
 import ProjectFactory from "./factories/project-factory";
 import StorgeManager from "./storage-controller";
 import DisplayController from "./display-controller";
+import ProjectsManager from "./project-manager";
 
 DisplayController.renderMainLayout();
 
@@ -36,4 +37,3 @@ const anotherProject = ProjectFactory({
 });
 
 StorgeManager.storeProjects([defaultProject, anotherProject]);
-console.log(JSON.parse(StorgeManager.getProjects()));

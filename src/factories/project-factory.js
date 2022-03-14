@@ -1,45 +1,37 @@
 import { parseTodos } from "./todo-factory";
 
-export default function ProjectFactory({ id, name, todos }) {
-  const todosArray = [...todos];
-
-  function addTodo(todo) {
-    todosArray.push(todo);
-  }
-
-  function removeTodo(todoid) {
-    const todoIndex = todosArray.findIndex((t) => {
+const projectProto = {
+  addTodo(todo) {
+    this.todosArray.push(todo);
+  },
+  removeTodo(todoid) {
+    const todoIndex = this.todosArray.findIndex((t) => {
       t.id === todoid;
     });
     if (todoIndex !== -1) {
-      todosArray.splice(todoIndex, 1);
+      this.todosArray.splice(todoIndex, 1);
     }
     return todoIndex;
-  }
+  },
 
-  function getTodoWithId(todoId) {
-    return todosArray.find((t) => {
+  getTodoWithId(todoId) {
+    return this.todosArray.find((t) => {
       return t.id === todoId;
     });
-  }
+  },
 
-  function emptyTodoArray() {
-    todosArray.length = 0;
-  }
+  emptyTodoArray() {
+    this.todosArray.length = 0;
+  },
+};
 
-  return {
-    get id() {
-      return id;
-    },
-    get todosArray() {
-      return [...todosArray];
-    },
-    name,
-    addTodo,
-    removeTodo,
-    getTodoWithId,
-    emptyTodoArray,
-  };
+export default function ProjectFactory({ id, name, todos }) {
+  const project = Object.create(projectProto);
+  project.id = id;
+  project.name = name;
+  project.todosArray = [...todos];
+
+  return project;
 }
 
 function parseProjects(projectsArray) {

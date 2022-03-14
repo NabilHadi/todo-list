@@ -1,3 +1,13 @@
+const todoProto = {
+  addNote(note) {
+    this.notes.push(note);
+  },
+
+  addSubTodo(todo) {
+    this.subTodos.push(todo);
+  },
+};
+
 export default function TodoFactory({
   id,
   title,
@@ -8,32 +18,18 @@ export default function TodoFactory({
   notes = [],
   subTodos = [],
 }) {
-  function addNote(note) {
-    notes.push(note);
-  }
-
-  function addSubTodo(todo) {
-    subTodos.push(todo);
-  }
-
-  return {
-    get id() {
-      return id;
-    },
+  const todo = Object.assign(Object.create(todoProto), {
+    id,
     title,
     description,
-    dueDate: new Date(dueDate),
+    dueDate,
     priority,
     isComplete,
-    get notes() {
-      return [...notes];
-    },
-    get subTodos() {
-      return [...subTodos];
-    },
-    addNote,
-    addSubTodo,
-  };
+    notes,
+    subTodos,
+  });
+
+  return todo;
 }
 
 function parseTodos(todosArray) {
