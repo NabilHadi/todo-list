@@ -1,21 +1,18 @@
-function storeProject(projectName, project) {
-  localStorage.setItem(projectName, JSON.stringify(project));
-}
+const StorgeManager = (function () {
+  const projectsKey = "projects";
 
-function getProject(projectName, todosKey) {
-  const project = localStorage.getItem(projectName);
-  if (!project) return null;
+  const storeProjects = (projects) => {
+    localStorage.setItem(projectsKey, JSON.stringify(projects));
+  };
 
-  return JSON.parse(project);
-}
+  const getProjects = () => {
+    return localStorage.getItem(projectsKey);
+  };
 
-// JSON.parse(project, (key, value) => {
-//   if (key === todosKey) {
-//     value = value.map((todo) => {
-//       return TodoFactory(todo);
-//     });
-//   }
-//   return value;
-// });
+  return {
+    storeProjects,
+    getProjects,
+  };
+})();
 
-export default { storeProject, getProject };
+export default StorgeManager;

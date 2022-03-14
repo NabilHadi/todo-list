@@ -1,87 +1,12 @@
-import storageController from "./storage-controller";
+import { v4 as uuidv4 } from "uuid";
 
-function ProjectFactory({ name, todos }) {
-  const todosArray = [...todos];
-
-  function addTodo(todo) {
-    todosArray.push(todo);
-  }
-
-  function removeTodo(todo) {
-    todosArray.filter((t) => {
-      return todo !== t;
-    });
-  }
-
-  function getTodoWithId(id) {
-    return todosArray.find((t) => {
-      return t.id === id;
-    });
-  }
-
-  function getAllTodos() {
-    return [...todosArray];
-  }
-
-  function emptyTodoArray() {
-    todosArray.length = 0;
-  }
-
-  function toJSON() {
-    return { name, todosArray };
-  }
-
-  return {
-    name,
-    addTodo,
-    removeTodo,
-    getTodoWithId,
-    getAllTodos,
-    emptyTodoArray,
-    toJSON,
-  };
-}
-
-function TodoFactory({
-  id,
-  title,
-  description,
-  dueDate,
-  priority,
-  isComplete = false,
-  notes = [],
-  subTodos = [],
-}) {
-  function addNote(note) {
-    notes.push(note);
-  }
-
-  function addSubTodo(todo) {
-    subTodos.push(todo);
-  }
-
-  return {
-    get id() {
-      return id;
-    },
-    title,
-    description,
-    dueDate: new Date(dueDate),
-    priority,
-    isComplete,
-    get notes() {
-      return [...notes];
-    },
-    get subTodos() {
-      return [...subTodos];
-    },
-    addNote,
-    addSubTodo,
-  };
-}
+import TodoFactory from "./factories/todo-factory";
+import ProjectFactory from "./factories/project-factory";
+import StorgeManager from "./storage-controller";
+import ProjectsManager from "./project-manager";
 
 const mytodo = TodoFactory({
-  id: "1",
+  id: uuidv4(),
   title: "todo title",
   description: "todo description",
   dueDate: new Date(),
@@ -89,22 +14,24 @@ const mytodo = TodoFactory({
 });
 
 const mytodo2 = TodoFactory({
-  id: "2",
+  id: uuidv4(),
   title: "todo title 2",
   description: "todo description 2",
   dueDate: new Date(),
   priority: "2",
 });
 
-const myProject = ProjectFactory({
-  name: "myProject",
-  todos: [mytodo, mytodo2],
+const defaultProject = ProjectFactory({
+  id: uuidv4(),
+  name: "defaultProject",
+  todos: [mytodo],
 });
 
-console.log(myProject);
+const anotherProject = ProjectFactory({
+  id: uuidv4(),
+  name: "anotherProject",
+  todos: [mytodo2],
+});
 
-storageController.storeProject(myProject.name, myProject);
-
-console.log(storageController.getProject(myProject.name, "todosArray"));
-
-export { TodoFactory };
+StorgeManager.storeProjects([defaultProject, anotherProject]);
+console.log(JSON.parse(StorgeManager.getProjects()));
