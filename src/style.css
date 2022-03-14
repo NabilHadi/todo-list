@@ -1,0 +1,107 @@
+@font-face {
+  font-family: "Roboto";
+  src: url("./Roboto-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: "Roboto", sans-serif;
+}
+
+.content-container {
+  height: 100vh;
+  background-color: red;
+  display: grid;
+  grid-template-areas:
+    "navbar navbar"
+    "sidebar main";
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: max-content 1fr;
+}
+
+.navbar {
+  background-color: #dc4c3f;
+  color: white;
+  grid-area: navbar;
+  padding: 1rem 2rem;
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  grid-template-rows: 1fr;
+}
+
+.brand-name {
+  font-size: 1.5rem;
+}
+
+.navbar-utilites-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-bar-container {
+  display: flex;
+  align-items: center;
+  width: clamp(200px, 50%, 400px);
+}
+
+.search-bar-icon {
+  height: 20px;
+}
+
+.search-bar-input {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  color: white;
+  font-size: 0.9rem;
+  padding: 8px;
+  transition: box-shadow 0.1s ease-in-out;
+  width: 100%;
+}
+
+.search-bar-input:focus {
+  box-shadow: 0 1px white;
+}
+
+.search-bar-input::placeholder {
+  color: white;
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+.navbar-btns-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.icon-btn {
+  cursor: pointer;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.icon-btn:hover {
+  opacity: 0.8;
+}
+
+.icon-btn:active {
+  opacity: 1;
+}
+
+.sidebar {
+  background-color: beige;
+  grid-area: sidebar;
+}
+
+.main-content {
+  background-color: rgb(29, 70, 41);
+  grid-area: main;
+}

@@ -3,7 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import TodoFactory from "./factories/todo-factory";
 import ProjectFactory from "./factories/project-factory";
 import StorgeManager from "./storage-controller";
-import ProjectsManager from "./project-manager";
+import DisplayController from "./display-controller";
+
+DisplayController.renderMainLayout();
 
 const mytodo = TodoFactory({
   id: uuidv4(),
