@@ -1,8 +1,8 @@
 import "./style.css";
-import magnifyIcon from "./magnify.svg";
-import plusIcon from "./plus.svg";
-import bellIcon from "./bell.png";
-import cogIcon from "./cog.png";
+import magnifyIcon from "./assests/magnify.svg";
+import plusIcon from "./assests/plus.svg";
+import bellIcon from "./assests/bell.png";
+import cogIcon from "./assests/cog.png";
 
 const DisplayController = (function () {
   const contentDiv = document.querySelector("#content");
