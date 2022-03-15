@@ -12,19 +12,22 @@ const DisplayController = (function () {
   containerDiv.classList.add("content-container");
   contentDiv.appendChild(containerDiv);
 
+  const navbarDiv = document.createElement("div");
+  navbarDiv.classList.add("navbar");
+
+  const sidebarDiv = document.createElement("div");
+  sidebarDiv.classList.add("sidebar");
+
+  const mainContentDiv = document.createElement("div");
+  mainContentDiv.classList.add("main-content");
+
   function renderMainLayout() {
-    const navbarDiv = document.createElement("div");
-    navbarDiv.classList.add("navbar");
     containerDiv.append(renderNavbarComponent(navbarDiv));
 
-    const sidebarDiv = document.createElement("div");
-    sidebarDiv.classList.add("sidebar");
     containerDiv.append(
       renderSidebarComponent(sidebarDiv, ProjectsManager.projectsArray)
     );
 
-    const mainContentDiv = document.createElement("div");
-    mainContentDiv.classList.add("main-content");
     containerDiv.append(
       renderMainContentComponent(
         mainContentDiv,
@@ -93,6 +96,9 @@ const DisplayController = (function () {
       li.classList.add("project-item");
       li.dataset.projectId = project.id;
       li.textContent = project.name;
+      li.addEventListener("click", (event) => {
+        renderMainContentComponent(mainContentDiv, project);
+      });
       ul.append(li);
     }
 
@@ -100,13 +106,14 @@ const DisplayController = (function () {
   }
 
   function renderMainContentComponent(mainContentDiv, project) {
+    mainContentDiv.innerHTML = "";
     const ul = document.createElement("ul");
     ul.classList.add("main-content-todos-ul");
     mainContentDiv.append(ul);
 
     if (!project) return mainContentDiv;
 
-    for (const todo of project.todosArray) {
+    for (const todo of project.todos) {
       const li = document.createElement("li");
       li.classList.add("todo-item");
       li.dataset.todoId = todo.id;

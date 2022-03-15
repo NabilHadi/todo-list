@@ -1,4 +1,4 @@
-import { parseProjects } from "./factories/project-factory";
+import { parseProjects } from "./factories/project";
 import StorgeManager from "./storage-controller";
 
 const ProjectsManager = (function () {
