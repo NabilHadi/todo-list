@@ -1,7 +1,8 @@
 import { parseTodos } from "./todo";
+import { v4 as uuidv4 } from "uuid";
 
 export default class Project {
-  constructor({ id, name, todos }) {
+  constructor({ id = uuidv4(), name, todos = [] }) {
     this.id = id;
     this.name = name;
     this.todos = todos;

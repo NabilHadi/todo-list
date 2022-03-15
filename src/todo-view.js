@@ -29,7 +29,7 @@ export default class TodoView {
 
     const todoDueDateDiv = createHTMLElement({
       classList: ["todo-item-duedate"],
-      textContent: format(parseISO(this.todoObj.dueDate), "Pp"),
+      textContent: format(this.todoObj.dueDate, "Pp"),
     });
     li.append(todoDueDateDiv);
 

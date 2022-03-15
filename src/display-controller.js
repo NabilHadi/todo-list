@@ -10,6 +10,7 @@ import cogIcon from "./assests/cog.png";
 import TodoView from "./todo-view";
 import Todo from "./factories/todo";
 import { el } from "date-fns/locale";
+import Project from "./factories/project";
 
 const DisplayController = (function () {
   const contentDiv = document.querySelector("#content");
@@ -92,6 +93,7 @@ const DisplayController = (function () {
   }
 
   function renderSidebarComponent(sidebarDiv, projects) {
+    sidebarDiv.innerHTML = "";
     const ul = document.createElement("ul");
     ul.classList.add("sidebar-projects-ul");
     sidebarDiv.append(ul);
@@ -104,8 +106,47 @@ const DisplayController = (function () {
       li.addEventListener("click", (event) => {
         renderMainContentComponent(mainContentDiv, project);
       });
+
+      const deleteBtn = createHTMLElement({
+        elementType: "span",
+        textContent: "X",
+        classList: ["project-delete-btn"],
+      });
+      deleteBtn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        ProjectsManager.deleteProject(project.id);
+        li.remove();
+        renderMainContentComponent(mainContentDiv);
+      });
+      li.append(deleteBtn);
       ul.append(li);
     }
+
+    const newProjectLi = createHTMLElement({
+      elementType: "li",
+      classList: ["project-item", "btn"],
+    });
+    const newProjectInput = createHTMLElement({ elementType: "input" });
+    newProjectLi.append(newProjectInput);
+    const newProjectBtn = createHTMLElement({
+      elementType: "span",
+      textContent: "+",
+      classList: ["project-add-btn"],
+    });
+
+    newProjectBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+
+      if (newProjectInput.value === "") {
+        newProjectInput.classList.add("error-input");
+        return;
+      }
+      newProjectInput.classList.remove("error-input");
+      ProjectsManager.addProject(new Project({ name: newProjectInput.value }));
+      renderSidebarComponent(sidebarDiv, ProjectsManager.projectsArray);
+    });
+    newProjectLi.append(newProjectBtn);
+    ul.append(newProjectLi);
 
     return sidebarDiv;
   }
@@ -115,6 +156,8 @@ const DisplayController = (function () {
     const ul = document.createElement("ul");
     ul.classList.add("main-content-todos-ul");
     mainContentDiv.append(ul);
+
+    if (!project) return mainContentDiv;
 
     const form = newTodoForm();
     form.addEventListener("submit", function (event) {
@@ -132,12 +175,10 @@ const DisplayController = (function () {
       const newTodoView = new TodoView(newTodo);
       ul.append(newTodoView.createTodoView("li"));
       ProjectsManager.updateStorage();
-      // event.target.reset();
+      event.target.reset();
     });
 
     ul.append(form);
-
-    if (!project) return mainContentDiv;
 
     for (const todo of project.todos) {
       const todoView = new TodoView(todo);

@@ -59,6 +59,10 @@ button {
   border: none;
 }
 
+.error-input {
+  border: 4px solid red;
+}
+
 .btn {
   -moz-user-select: none;
   -webkit-user-select: none;
@@ -177,10 +181,28 @@ button {
   text-transform: capitalize;
   cursor: pointer;
   border-radius: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sidebar-projects-ul li:hover {
   opacity: 0.8;
+}
+
+.sidebar-projects-ul li .project-delete-btn,
+.sidebar-projects-ul li .project-add-btn {
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.sidebar-projects-ul li .project-delete-btn:hover,
+.sidebar-projects-ul li .project-add-btn:hover {
+  background-color: rgba(0, 0, 0, 0.16);
+}
+
+.sidebar-projects-ul li .project-add-btn {
+  font-size: 1.2rem;
 }
 
 .main-content {

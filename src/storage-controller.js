@@ -9,9 +9,14 @@ const StorgeManager = (function () {
     return localStorage.getItem(projectsKey);
   };
 
+  const clearStorage = () => {
+    localStorage.clear();
+  };
+
   return {
     storeProjects,
     getProjects,
+    clearStorage,
   };
 })();
 
