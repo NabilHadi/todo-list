@@ -1,5 +1,14 @@
+import { v4 as uuidv4 } from "uuid";
+
 export default class Todo {
-  constructor({ id, title, description, dueDate, priority, isComplete }) {
+  constructor({
+    id = uuidv4(),
+    title,
+    description,
+    dueDate,
+    priority,
+    isComplete = false,
+  }) {
     this.id = id;
     this.title = title;
     this.description = description;
@@ -21,6 +30,10 @@ export default class Todo {
     }
 
     return index;
+  }
+
+  toggleCompleteState() {
+    return (this.isComplete = !this.isComplete);
   }
 }
 

@@ -16,9 +16,67 @@
 }
 
 ul {
-  list-style: disc inside;
+  list-style: none;
   display: flex;
-  margin-left: 0;
+}
+
+label,
+textarea {
+  letter-spacing: 1px;
+}
+
+textarea {
+  padding: 10px;
+  max-width: 100%;
+  line-height: 1.5;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px #999;
+}
+
+textarea:focus {
+  outline: none;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input {
+  font-size: 1rem;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px #999;
+}
+
+input:focus {
+  outline: none;
+}
+
+button {
+  border: none;
+}
+
+.btn {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding: 8px 16px;
+  background-color: #dc4c3f;
+  border-radius: 10px;
+  cursor: pointer;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:active {
+  opacity: 1;
 }
 
 .content-container {
@@ -69,6 +127,8 @@ ul {
   color: white;
   font-size: 0.9rem;
   padding: 8px;
+  border-radius: 0;
+  box-shadow: none;
   transition: box-shadow 0.1s ease-in-out;
   width: 100%;
 }
@@ -116,6 +176,7 @@ ul {
 .sidebar-projects-ul li {
   text-transform: capitalize;
   cursor: pointer;
+  border-radius: 50px;
 }
 
 .sidebar-projects-ul li:hover {
@@ -125,4 +186,52 @@ ul {
 .main-content {
   background-color: white;
   grid-area: main;
+}
+.form-button {
+  margin-top: 10px;
+}
+
+.main-content-todos-ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 400px));
+  grid-template-rows: repeat(auto-fit, minmax(250px, 400px));
+  height: 100%;
+  padding: 1rem;
+  gap: 1rem;
+  list-style: none;
+}
+
+.todo-item {
+  padding: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  display: flex;
+  flex-direction: column;
+  background: url("./assests/glenn-carstens-peters-RLw-UC03Gwc-unsplash.jpg")
+    no-repeat center center/cover;
+  background-blend-mode: color;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  border-radius: 10px;
+  gap: 8px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.todo-item.completed-todo {
+  box-shadow: none;
+  box-shadow: rgb(13, 212, 103) 0px 0px 0px 7px;
+}
+
+.todo-item-header {
+  margin-top: 1rem;
+  flex: 0.5;
+  font-size: 2rem;
+}
+
+.todo-item-descrip {
+  flex: 1;
+}
+
+.todo-item .toggle-btn {
+  margin-top: 8px;
 }

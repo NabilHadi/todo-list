@@ -26,6 +26,17 @@ const ProjectsManager = (function () {
     });
   };
 
+  const deleteTodo = (todo) => {
+    projectsArray.forEach((proj) => {
+      proj.removeTodo(todo.id);
+    });
+    updateStorage();
+  };
+
+  const updateStorage = () => {
+    StorgeManager.storeProjects(projectsArray);
+  };
+
   return {
     get projectsArray() {
       return [...projectsArray];
@@ -33,6 +44,8 @@ const ProjectsManager = (function () {
     addProject,
     deleteProject,
     getProjectWithId,
+    deleteTodo,
+    updateStorage,
   };
 })();
 

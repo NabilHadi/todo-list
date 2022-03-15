@@ -1,10 +1,15 @@
+import format from "date-fns/format";
+import parseISO from "date-fns/parseISO";
+import ProjectsManager from "./project-manager";
+
 import "./style.css";
 import magnifyIcon from "./assests/magnify.svg";
 import plusIcon from "./assests/plus.svg";
 import bellIcon from "./assests/bell.png";
 import cogIcon from "./assests/cog.png";
-
-import ProjectsManager from "./project-manager";
+import TodoView from "./todo-view";
+import Todo from "./factories/todo";
+import { el } from "date-fns/locale";
 
 const DisplayController = (function () {
   const contentDiv = document.querySelector("#content");
@@ -93,7 +98,7 @@ const DisplayController = (function () {
 
     for (const project of projects) {
       const li = document.createElement("li");
-      li.classList.add("project-item");
+      li.classList.add("project-item", "btn");
       li.dataset.projectId = project.id;
       li.textContent = project.name;
       li.addEventListener("click", (event) => {
@@ -111,22 +116,124 @@ const DisplayController = (function () {
     ul.classList.add("main-content-todos-ul");
     mainContentDiv.append(ul);
 
+    const form = newTodoForm();
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const dataObj = {};
+      for (const [key, value] of formData) {
+        console.log(key, value);
+        dataObj[key] = value;
+      }
+
+      const newTodo = new Todo(dataObj);
+      project.addTodo(newTodo);
+      const newTodoView = new TodoView(newTodo);
+      ul.append(newTodoView.createTodoView("li"));
+      ProjectsManager.updateStorage();
+      // event.target.reset();
+    });
+
+    ul.append(form);
+
     if (!project) return mainContentDiv;
 
     for (const todo of project.todos) {
-      const li = document.createElement("li");
-      li.classList.add("todo-item");
-      li.dataset.todoId = todo.id;
-      li.textContent = todo.title;
-      ul.append(li);
+      const todoView = new TodoView(todo);
+      ul.append(todoView.createTodoView("li"));
     }
 
     return mainContentDiv;
+  }
+
+  function newTodoForm() {
+    const form = createHTMLElement({
+      elementType: "form",
+      classList: ["new-todo-form", "todo-item"],
+    });
+
+    const titleLabel = createHTMLElement({
+      elementType: "label",
+      classList: ["form-label", "title-label"],
+      textContent: "Title: ",
+    });
+    form.append(titleLabel);
+
+    const titleInput = createHTMLElement({
+      elementType: "input",
+      classList: ["form-input", "title-input"],
+      attributes: { type: "text", name: "title", required: "" },
+    });
+    form.append(titleInput);
+
+    const descriptionLabel = createHTMLElement({
+      elementType: "label",
+      classList: ["form-label", "description-label"],
+      textContent: "Description: ",
+    });
+    form.append(descriptionLabel);
+
+    const descriptionInput = createHTMLElement({
+      elementType: "textarea",
+      classList: ["form-input", "description-input"],
+      attributes: { name: "description" },
+    });
+    form.append(descriptionInput);
+
+    const dateInput = createHTMLElement({
+      elementType: "input",
+      classList: ["form-input", "date-input"],
+      attributes: {
+        type: "date",
+        name: "dueDate",
+        required: "",
+      },
+    });
+    form.append(dateInput);
+
+    const priortyInput = createHTMLElement({
+      elementType: "input",
+      classList: ["form-input", "priorty-input"],
+      attributes: {
+        type: "number",
+        placeholder: "Priority",
+        name: "priority",
+        min: "1",
+        value: "1",
+      },
+    });
+    form.append(priortyInput);
+
+    const submitBtn = createHTMLElement({
+      elementType: "button",
+      classList: ["form-button", "btn"],
+      attributes: { type: "submit" },
+      textContent: "ADD",
+    });
+    form.append(submitBtn);
+
+    return form;
   }
 
   return {
     renderMainLayout,
   };
 })();
+
+export function createHTMLElement({
+  elementType = "div",
+  classList = [],
+  textContent = "",
+  attributes = {},
+}) {
+  const elm = document.createElement(elementType);
+  elm.classList.add(...classList);
+  elm.textContent = textContent;
+  for (const key of Object.keys(attributes)) {
+    elm.setAttribute(key, attributes[key]);
+  }
+  return elm;
+}
 
 export default DisplayController;
