@@ -26,13 +26,13 @@ const mytodo2 = TodoFactory({
 
 const defaultProject = ProjectFactory({
   id: uuidv4(),
-  name: "defaultProject",
+  name: "Default Project",
   todos: [mytodo],
 });
 
 const anotherProject = ProjectFactory({
   id: uuidv4(),
-  name: "anotherProject",
+  name: "Another Project",
   todos: [mytodo2],
 });
 
