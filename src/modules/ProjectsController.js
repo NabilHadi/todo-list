@@ -1,3 +1,6 @@
+import Project from "./Project";
+import Todo from "./Todo";
+
 /**
  * ProjectsController Responsibilities
  * - create/delete projects
