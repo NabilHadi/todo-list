@@ -21,6 +21,8 @@
     "webpack-dev-server": "^4.7.4"
   },
   "dependencies": {
+    "@ngneat/falso": "^6.4.0",
+    "the-new-css-reset": "^1.8.4",
     "uuid": "^9.0.0"
   }
 }
