@@ -61,7 +61,7 @@ function createFakeTodos(number) {
         title: randCatchPhrase(),
         description: randProductDescription(),
         dueDate: randFutureDate(),
-        priority: randNumber(0, 2),
+        priority: randNumber({ min: 1, max: 5 }),
       })
     );
   }
