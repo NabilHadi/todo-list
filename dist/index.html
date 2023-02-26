@@ -27,6 +27,26 @@
         </ul>
       </section>
     </main>
+    <form class="todo-form hide">
+      <label for="todo__title">Title</label>
+      <input type="text" name="todo__title" id="todo__title">
+      <label for="todo__description">Description</label>
+      <textarea name="todo__description" id="todo__description"></textarea>
+      <label for="todo__dueDate">Due Date</label>
+      <input type="date" name="todo__dueDate" id="todo__dueDate">
+      <label for="todo__priority">Priority</label>
+      <select name="todo__priority" id="todo__priority">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+      </select>
+      <label for="todo__project">Project</label>
+      <select name="todo__project" id="todo__project">
+      </select>
+      <button class="btn btn-round">Add Todo</button>
+    </form>
   </div>
   <script src="main.js"></script>
 </body>
