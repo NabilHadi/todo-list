@@ -4,12 +4,23 @@ import { createElement } from "./utils";
 // TODO: Create forms for: 1- adding new project, 2- adding new todo, 3- Editing Todo, 4- Editing Project
 
 export default class DisplayController {
-  constructor(currentProject) {
+  constructor(currentProject, projectsController) {
     this.newTodoBtn = document.querySelector(".new-todo-btn");
     this.newProjectBtn = document.querySelector(".new-project-btn");
     this.projectsUL = document.querySelector(".projects-list");
     this.todosUL = document.querySelector(".todos-list");
     this.currentProject = currentProject;
+    this.projectsController = projectsController;
+
+    this.handleProjectItemClick = this.handleProjectItemClick.bind(this);
+  }
+
+  handleProjectItemClick(event) {
+    const projectId = event.target.id;
+    const newProject = this.projectsController.getProjectById(projectId);
+    if (!newProject) return;
+
+    this.renderTodos(newProject);
   }
 
   renderProjectsList(projects = []) {
@@ -22,6 +33,9 @@ export default class DisplayController {
             classNames: ["project-item", "btn"],
             textContent: `${p.name}`,
             attributes: { id: `${p.id}` },
+            eventHandlers: {
+              click: this.handleProjectItemClick,
+            },
           }),
         ],
       });
