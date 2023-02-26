@@ -42,6 +42,26 @@ body {
   opacity: 0.8;
 }
 
+.priority-1 {
+  background-color: white;
+}
+
+.priority-2 {
+  background-color: hsl(240, 61%, 93%);
+}
+
+.priority-3 {
+  background-color: hsl(108, 58%, 80%);
+}
+
+.priority-4 {
+  background-color: hsl(66, 59%, 65%);
+}
+
+.priority-5 {
+  background-color: hsl(0, 59%, 55%);
+}
+
 main {
   text-align: center;
 }
@@ -84,5 +104,4 @@ h1 {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  background-color: white;
 }
