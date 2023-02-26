@@ -1,4 +1,15 @@
-import Todo from "./modules/Todo";
+import "the-new-css-reset/css/reset.css";
+import "./style.css";
 
-const myTodo = new Todo("test", "desc", "tmw", 0);
-console.log(myTodo);
+import DisplayController from "./modules/DisplayController";
+import { getProjects } from "./modules/utils";
+
+const projects = getProjects();
+console.log(projects);
+
+window.addEventListener("DOMContentLoaded", () => {
+  const DC = new DisplayController(projects[0]);
+
+  DC.renderProjectsList(projects);
+  DC.renderTodos();
+});
