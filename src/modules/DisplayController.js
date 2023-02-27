@@ -1,3 +1,4 @@
+import TodoListComponent from "./TodoListComponent";
 import { createElement } from "./utils";
 
 // TODO: Add event Handlers
@@ -70,9 +71,12 @@ export default class DisplayController {
     this.newTodoBtn = document.querySelector(".new-todo-btn");
     this.newProjectBtn = document.querySelector(".new-project-btn");
     this.projectsUL = document.querySelector(".projects-list");
-    this.todosUL = document.querySelector(".todos-list");
+
     this.currentProject = currentProject;
     this.projectsController = projectsController;
+
+    this.todoListComponent = new TodoListComponent(currentProject.todos);
+    this.todoListComponent.setTodos(currentProject.todos);
 
     this.handleProjectItemClick = this.handleProjectItemClick.bind(this);
     this.handleNewTodoBtnClick = this.handleNewTodoBtnClick.bind(this);
@@ -87,7 +91,7 @@ export default class DisplayController {
     const newProject = this.projectsController.getProjectById(projectId);
     if (!newProject) return;
 
-    this.renderTodos(newProject);
+    this.todoListComponent.setTodos(newProject.todos);
   }
 
   handleNewTodoBtnClick() {
@@ -113,42 +117,5 @@ export default class DisplayController {
     });
     this.projectsUL.innerHTML = "";
     this.projectsUL.append(...listItems);
-  }
-
-  renderTodos(project = null) {
-    if (!project && !this.currentProject) return;
-
-    if (project) {
-      this.currentProject = project;
-    }
-
-    const listItems = this.currentProject.todos.map((t) => {
-      return createElement({
-        tag: "li",
-        children: [
-          createElement({
-            tag: "button",
-            classNames: [
-              "todo-item",
-              `priority-${t.priority}`,
-              "btn",
-              "btn-round",
-            ],
-            textContent: `${t.title}`,
-            attributes: { id: `${t.id}` },
-            children: [
-              createElement({
-                tag: "span",
-                classNames: ["todo-duedate"],
-                textContent: `${t.dueDate}`,
-              }),
-            ],
-          }),
-        ],
-      });
-    });
-
-    this.todosUL.innerHTML = "";
-    this.todosUL.append(...listItems);
   }
 }

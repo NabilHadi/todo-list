@@ -13,5 +13,4 @@ window.addEventListener("DOMContentLoaded", () => {
   const DC = new DisplayController(projects[0], projectsController);
 
   DC.renderProjectsList(projects);
-  DC.renderTodos();
 });
