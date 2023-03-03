@@ -20,18 +20,18 @@ body {
 
 #content {
   display: flex;
-  height: 100%;
+  flex-direction: column;
+  min-height: 100%;
   align-items: center;
   justify-content: center;
   background-color: aliceblue;
 }
 
 .btn {
-  padding: 1rem 2rem;
-  border: 1px solid;
   cursor: pointer;
   user-select: none;
   text-align: center;
+  padding: 5px;
 }
 
 .btn-round {
@@ -63,8 +63,52 @@ body {
   background-color: hsl(0, 59%, 55%);
 }
 
+.priority-1,
+.priority-2,
+.priority-3,
+.priority-4,
+.priority-5 {
+  position: relative;
+}
+
+.priority-1::before,
+.priority-2::before,
+.priority-3::before,
+.priority-4::before,
+.priority-5::before {
+  position: absolute;
+  font-size: large;
+  top: -20%;
+  left: 0;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 50% 50%;
+  background-color: inherit;
+}
+
+.priority-1::before {
+  content: "P1";
+}
+
+.priority-2::before {
+  content: "P2";
+}
+
+.priority-3::before {
+  content: "P3";
+}
+
+.priority-4::before {
+  content: "P4";
+}
+
+.priority-5::before {
+  content: "P5";
+}
+
 main {
   text-align: center;
+  margin-top: 2rem;
 }
 
 h1 {
@@ -78,6 +122,12 @@ h1 {
   padding: 1rem;
 }
 
+.new-todo-btn,
+.new-project-btn {
+  background-color: white;
+  padding: 1rem;
+}
+
 .projects-list-container {
   padding: 1rem;
 }
@@ -85,10 +135,33 @@ h1 {
 .projects-list {
   display: flex;
   justify-content: center;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.projects-list li {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid;
+}
+
+.projects-list li .project-item {
+  width: 100%;
+  padding: 10px;
+}
+
+.projects-list li .project-edit-btn,
+.projects-list li .project-delete-btn {
+  flex: 1;
+  background-color: #888;
 }
 
 .projects-list li:not(:last-child) button {
   border-right: none;
+}
+
+.projects-list li .current-project {
+  background-color: white;
 }
 
 .todos-list-container {
@@ -101,14 +174,31 @@ h1 {
   gap: 1rem;
 }
 
+.todos-list li {
+  display: flex;
+  border: 1px solid;
+}
+
 .todo-item {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  padding: 1rem 2rem;
+}
+
+.todo-complete {
+  opacity: 0.5;
+}
+
+.delete-btn {
+  flex-shrink: 1;
+  flex-grow: 0;
+  padding: 3px;
+  border-left: none;
 }
 
 .modal {
-  display: none; /* Hidden by default */
+  display: none;
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
   left: 0;
@@ -120,7 +210,7 @@ h1 {
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
 }
 
-.modal-content {
+.modal > * {
   position: relative;
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
@@ -157,6 +247,7 @@ form {
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
 label {
@@ -164,7 +255,7 @@ label {
   font-size: 1.2rem;
 }
 
-input,
+input:not([type="checkbox"]),
 textarea {
   min-height: 2rem;
   border-radius: 5px;
@@ -172,4 +263,16 @@ textarea {
   background-color: rgba(0, 0, 0, 0.048);
   font-size: 1.5rem;
   padding: 5px;
+}
+
+input[type="checkbox"] {
+  all: revert;
+}
+
+select {
+  all: revert;
+}
+
+form button {
+  background-color: white;
 }

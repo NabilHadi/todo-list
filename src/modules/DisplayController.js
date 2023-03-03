@@ -1,101 +1,144 @@
 import TodoListComponent from "./TodoListComponent";
 import { createElement } from "./utils";
-
-// TODO: Add event Handlers
-// TODO: Create forms for: 1- adding new project, 2- adding new todo, 3- Editing Todo, 4- Editing Project
-
-const modal = (function () {
-  const view = createElement({
-    tag: "div",
-    classNames: ["modal"],
-    attributes: { id: "modal" },
-  });
-
-  const modalContent = createElement({
-    tag: "div",
-    classNames: ["modal-content"],
-    attributes: {
-      id: "modal-content",
-    },
-  });
-  view.append(modalContent);
-
-  const closeBtn = createElement({
-    tag: "span",
-    classNames: ["close"],
-    textContent: "×",
-  });
-  modalContent.append(closeBtn);
-
-  closeBtn.addEventListener("click", () => {
-    hideModal();
-  });
-
-  view.addEventListener(
-    "click",
-    (e) => {
-      if (view !== e.target) return;
-      hideModal();
-    },
-    false
-  );
-
-  document.querySelector("#content").appendChild(view);
-
-  function setContent(content = []) {
-    modalContent.innerHTML = "";
-    modalContent.append(closeBtn);
-
-    modalContent.append(...content);
-  }
-
-  function showModal() {
-    view.classList.add("show");
-  }
-
-  function hideModal() {
-    view.classList.remove("show");
-  }
-
-  function getView() {
-    return view;
-  }
-
-  return { setContent, showModal, hideModal, getView };
-})();
-
-// const TodoForm = (function () {})();
+import * as Model from "./Model";
+import TodoFormComponent from "./TodoFormComponent";
+import ProjectForm from "./ProjectForm";
 
 export default class DisplayController {
-  constructor(currentProject, projectsController) {
+  constructor() {
     this.newTodoBtn = document.querySelector(".new-todo-btn");
     this.newProjectBtn = document.querySelector(".new-project-btn");
     this.projectsUL = document.querySelector(".projects-list");
+    this.projectFormModal = document.querySelector(".project-modal");
+    this.todoFormModal = document.querySelector(".todo-modal");
 
-    this.currentProject = currentProject;
-    this.projectsController = projectsController;
+    this.currentProjectId = Model.getProjects()[0].id;
 
-    this.todoListComponent = new TodoListComponent(currentProject.todos);
-    this.todoListComponent.setTodos(currentProject.todos);
+    // Add new Project
+    this.newProjectBtn.addEventListener("click", () => {
+      ProjectForm.renderAddingForm();
+      this.projectFormModal.classList.add("show");
+    });
+    ProjectForm.addNewProjectListener((name) => {
+      Model.addNewProject({ name });
+      this.projectFormModal.classList.remove("show");
+    });
+
+    // Edit Project
+    ProjectForm.addEditProjectListener((projectId, name) => {
+      Model.editProject(projectId, { name }, false);
+    });
+
+    // Add new Todo
+    this.todoFormComponent = new TodoFormComponent();
+    this.newTodoBtn.addEventListener("click", () => {
+      this.todoFormComponent.setFormAsNewTodo(
+        this.currentProjectId,
+        Model.getProjects()
+      );
+      this.todoFormModal.classList.add("show");
+    });
+    this.todoFormComponent.subToNewTodoEvent((data) => {
+      Model.addNewTodo(
+        {
+          title: data.title,
+          description: data.description,
+          dueDate: data.dueDate,
+          priority: data.priority,
+          isComplete: data.isComplete,
+        },
+        data.projectId
+      );
+      this.todoFormModal.classList.remove("show");
+    });
+
+    //  Edit Todo
+    this.todoFormComponent.subToEditTodoEvent((todoId, data) => {
+      Model.editTodo(
+        todoId,
+        {
+          title: data.title,
+          description: data.description,
+          dueDate: data.dueDate,
+          priority: data.priority,
+          isComplete: data.isComplete,
+        },
+        false
+      );
+      if (data.projectId !== this.currentProjectId) {
+        Model.changeTodoProject(todoId, data.projectId);
+      }
+    });
+
+    this.todoListComponent = new TodoListComponent();
+    this.todoListComponent.setTodos(
+      Model.getProjectTodos(this.currentProjectId)
+    );
+    this.todoListComponent.addTodoClickLisetner((todoId) => {
+      this.todoFormComponent.setFormAsEditTodo(
+        Model.getTodoById(todoId),
+        this.currentProjectId,
+        Model.getProjects()
+      );
+    });
+
+    // Add Todo delete handler
+    this.todoListComponent.addTodoDeleteClickListener((todoId) => {
+      Model.editTodo(todoId, null, true);
+    });
+
+    // Rerender Todos list on current project's todos change
+    Model.subToProjctEdit((data) => {
+      if (data.projectId !== this.currentProjectId) return;
+
+      this.todoListComponent.setTodos(
+        Model.getProjectTodos(this.currentProjectId)
+      );
+    });
+
+    // Rerender projects list on Project add
+    Model.subToProjctAdd(() => {
+      this.renderProjectsList(Model.getProjects());
+    });
+
+    // Reremder projects list on project edit
+    Model.subToProjctEdit(() => {
+      this.renderProjectsList(Model.getProjects());
+    });
 
     this.handleProjectItemClick = this.handleProjectItemClick.bind(this);
-    this.handleNewTodoBtnClick = this.handleNewTodoBtnClick.bind(this);
+    this.projectsUL.addEventListener("click", this.handleProjectItemClick);
 
-    this.newTodoBtn.addEventListener("click", this.handleNewTodoBtnClick);
-
-    modal.setContent([document.querySelector(".todo-form")]);
+    window.addEventListener("click", (event) => {
+      if (event.target == this.projectFormModal) {
+        this.projectFormModal.classList.remove("show");
+      } else if (event.target == this.todoFormModal) {
+        this.todoFormModal.classList.remove("show");
+      }
+    });
   }
 
   handleProjectItemClick(event) {
-    const projectId = event.target.id;
-    const newProject = this.projectsController.getProjectById(projectId);
-    if (!newProject) return;
+    const projectId = event.target.dataset.id;
+    if (!projectId) return;
 
-    this.todoListComponent.setTodos(newProject.todos);
-  }
+    if (event.target.classList.contains("project-edit-btn")) {
+      const project = Model.getProjects().find((p) => p.id === projectId);
+      if (!project) return;
 
-  handleNewTodoBtnClick() {
-    modal.showModal();
+      ProjectForm.renderEditingForm(project);
+    } else if (event.target.classList.contains("project-delete-btn")) {
+      const project = Model.getProjects().find((p) => p.id === projectId);
+      Model.editProject(project.id, null, true);
+    } else {
+      const projectTodos = Model.getProjectTodos(projectId);
+      if (!projectTodos) return;
+      if (this.currentProjectId === projectId) return;
+
+      this.currentProjectId = projectId;
+      this.renderProjectsList(Model.getProjects());
+      this.todoListComponent.setTodos(projectTodos);
+    }
   }
 
   renderProjectsList(projects = []) {
@@ -105,11 +148,30 @@ export default class DisplayController {
         children: [
           createElement({
             tag: "button",
-            classNames: ["project-item", "btn"],
+            classNames: [
+              "project-item",
+              "btn",
+              `${p.id === this.currentProjectId ? "current-project" : ""}`,
+            ],
             textContent: `${p.name}`,
-            attributes: { id: `${p.id}` },
-            eventHandlers: {
-              click: this.handleProjectItemClick,
+            dataset: {
+              id: `${p.id}`,
+            },
+          }),
+          createElement({
+            tag: "button",
+            classNames: ["btn", "project-edit-btn"],
+            textContent: `Edit`,
+            dataset: {
+              id: `${p.id}`,
+            },
+          }),
+          createElement({
+            tag: "button",
+            classNames: ["btn", "project-delete-btn"],
+            textContent: `Delete`,
+            dataset: {
+              id: `${p.id}`,
             },
           }),
         ],

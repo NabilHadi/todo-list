@@ -1,43 +1,54 @@
 export default class TodoListComponent {
-  constructor(currentTodos) {
+  constructor() {
     this._view = {
+      todoClickListeners: [],
+      todoDeleteBtnListeners: [],
       init() {
         this.todoListCotnainer = document.querySelector(
           ".todos-list-container"
         );
         this.todoListUL = this.todoListCotnainer.querySelector(".todos-list");
-        this.todoClickListeners = [];
 
         this.todoListUL.addEventListener("click", (e) => {
-          const todoId = e.target.id;
+          const todoId = e.target.dataset.id;
           if (!todoId) return;
-
-          this.todoClickListeners.forEach((listener) => listener(todoId));
+          if (e.target.classList.contains("delete-btn")) {
+            this.todoDeleteBtnListeners.forEach((listener) => listener(todoId));
+          } else {
+            this.todoClickListeners.forEach((listener) => listener(todoId));
+          }
         });
       },
 
       render(todos) {
-        const listItems = todos.reduce(
-          (html, todo) => html + this.todoTemplate(todo),
-          ``
-        );
+        const listItems = todos
+          .sort((t1, t2) => t2.priority - t1.priority)
+          .reduce((html, todo) => html + this.todoTemplate(todo), ``);
         this.todoListUL.innerHTML = listItems;
       },
 
       todoTemplate(todo) {
-        return `<li><button class="todo-item priority-${todo.priority} btn btn-round" id="${todo.id}">${todo.title}<span class="todo-duedate">${todo.dueDate}</span></button></li>`;
+        return `<li><button class="todo-item priority-${todo.priority} btn  ${
+          todo.isComplete ? "todo-complete" : ""
+        }" data-id="${todo.id}">${todo.title}<span class="todo-duedate">${
+          todo.dueDate
+        }</span></button> <button class="btn delete-btn" data-id="${
+          todo.id
+        }">DEL</button></li>`;
       },
 
       addTodoClickListener(handler) {
         this.todoClickListeners.push(handler);
       },
+
+      addTodoDeleteClickListener(handler) {
+        this.todoDeleteBtnListeners.push(handler);
+      },
     };
 
     this._model = {
-      init(todos = []) {
-        this.todos = todos;
-        this.changeListeners = [];
-      },
+      todos: [],
+      changeListeners: [],
 
       addChangeListener(listener) {
         this.changeListeners.push(listener);
@@ -55,16 +66,6 @@ export default class TodoListComponent {
         });
       },
 
-      addTodo(todo) {
-        this.todos.push(todo);
-        this.triggerChange();
-      },
-
-      removeTodo(todo) {
-        this.todos = this.todo.filter((t) => t !== todo);
-        this.triggerChange();
-      },
-
       getTodos() {
         return this.todos;
       },
@@ -75,7 +76,6 @@ export default class TodoListComponent {
       },
     };
 
-    this._model.init(currentTodos);
     this._view.init();
 
     this.modelChangeHandler = this.modelChangeHandler.bind(this);
@@ -92,5 +92,9 @@ export default class TodoListComponent {
 
   addTodoClickLisetner(handler) {
     this._view.addTodoClickListener(handler);
+  }
+
+  addTodoDeleteClickListener(handler) {
+    this._view.addTodoDeleteClickListener(handler);
   }
 }
